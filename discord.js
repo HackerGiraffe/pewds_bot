@@ -84,4 +84,5 @@ client.on("message", async msg => {
     console.error(chalk.red("error in message handler"), err);
   }
 });
+
 client.login(CONFIG.discord.token); // Logs in with Token at CONFIG.discord.token

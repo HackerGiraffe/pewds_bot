@@ -42,12 +42,13 @@ const T = new Twit({
 require("./discord");
 
 //Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast
+let users_arr = ["286036879", "39538010", '365956744', '427930773', '2455740283'];
 const stream = T.stream("statuses/filter", {
-	follow: ["286036879", "39538010", '365956744', '427930773', '2455740283']
+	follow: users_arr
 });
 stream.on("tweet", async tweet => {
 	//Check if it's not a RT by checking the twitter ID
-	if (tweet.user && !tweet.in_reply_to_status_id) {
+	if (tweet.user && !tweet.in_reply_to_status_id && (users_arr.indexOf(tweet.user.id_str) >= 0)) {
 		//Get the statistics
 		getStats().then(res => {
 			let msg;
