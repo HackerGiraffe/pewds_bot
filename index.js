@@ -11,18 +11,25 @@ TODO:
 **********************************/
 
 //Utils
-const chalk = require('chalk');
-const humanize = require('humanize-number');
+const chalk = require("chalk");
+const humanize = require("humanize-number");
+
+// Utils
+const {
+	getStats
+} = require("./util");
 
 //Sources
 const Twit = require('twit');
 const {
 	YouTube
 } = require('better-youtube-api');
+const Discord = require('discord.js');
 
 //Config and init
-const CONFIG = require('./config.json');
+const CONFIG = require("./config.json");
 const youtube = new YouTube(CONFIG.youtube.api_key);
+const discord_token = CONFIG.discord.token;
 
 //Init twitter
 const T = new Twit({
@@ -32,28 +39,26 @@ const T = new Twit({
 	access_token_secret: CONFIG.twitter.access_token_secret
 });
 
+//Modules
+require("./discord");
 
-function getStats() {
-	return new Promise(async resolve => {
-		const [pewdiepie, tseries] = await Promise.all([
-			youtube.getChannel('UC-lHJZR3Gqxm24_Vd_AJ5Yw'),
-			youtube.getChannel('UCq-Fj5jknLsUf-MWSy4_brA')
-		  ]);
-		  resolve({
-			  pewdiepie: parseInt(pewdiepie.data.statistics.subscriberCount),
-			  tseries: parseInt(tseries.data.statistics.subscriberCount),
-			  difference: parseInt(pewdiepie.data.statistics.subscriberCount - tseries.data.statistics.subscriberCount) //Javascript wonders
-		  })
-	})
-  }
-
-//Listen for tweets from TSeries and PewDiePie
-const stream = T.stream('statuses/filter', {
-	follow: ['286036879', '39538010', '1068166867238494208']
+//Check twitter
+T.get('account/verify_credentials', { skip_status: true })
+  .catch(function (err) {
+    console.log(chalk.red(`[Twitter] Error logging in!`), err);
+  })
+  .then(function (result) {
+	  console.log(chalk.green(`[Twitter] Logged in successfully!`));
 });
-stream.on('tweet', (tweet) => {
+
+//Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast
+let users_arr = ["286036879", "39538010", '365956744', '427930773', '2455740283'];
+const stream = T.stream("statuses/filter", {
+	follow: users_arr
+});
+stream.on("tweet", async tweet => {
 	//Check if it's not a RT by checking the twitter ID
-	if (tweet.user.id_str === '39538010' || tweet.user.id_str === '286036879' || tweet.user.id_str == '1068166867238494208') {
+	if (tweet.user && !tweet.in_reply_to_status_id && (users_arr.indexOf(tweet.user.id_str) >= 0)) {
 		//Get the statistics
 		getStats().then(res => {
 			let msg;
@@ -68,19 +73,24 @@ stream.on('tweet', (tweet) => {
 			}
 
 			//Actually reply to the said tweet
-			T.post('statuses/update', {
-				status: msg,
-				in_reply_to_status_id: tweet.id_str,
-				auto_populate_reply_metadata: true
-			}, (err, data, response) => {
-				if (err) {
-					//If someone can improve this please do I hate error handling thanks
-					console.log(chalk.red('Error tweeting!', err));
-				} else {
-					//Too lazy to check the data for an actual OK response, I'm sleepy and tired
-					console.log(chalk.green(`Tweeted successfully at @${tweet.user.screen_name}!`));
+			T.post(
+				"statuses/update", {
+					status: msg,
+					in_reply_to_status_id: tweet.id_str,
+					auto_populate_reply_metadata: true
+				},
+				(err, data, response) => {
+					if (err) {
+						//If someone can improve this please do I hate error handling thanks
+						console.log(chalk.red("[Twitter] Error tweeting!", err));
+					} else {
+						//Too lazy to check the data for an actual OK response, I'm sleepy and tired
+						console.log(
+							chalk.green(`[Twitter] Tweeted successfully at @${tweet.user.screen_name}!`)
+						);
+					}
 				}
-			});
+			);
 		});
 	}
 });

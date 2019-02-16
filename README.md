@@ -1,2 +1,15 @@
 # pewds_bot
-It's a bot that does things on Twitter for PewDiePie
+
+It's a bot that does things on Twitter and Discord for PewDiePie
+
+## Discord
+
+This Discord bot can provide you real-time information regarding the sub gap.
+You can invite it [here](https://discordapp.com/oauth2/authorize?client_id=546361604107927562&scope=bot&permissions=70679617).
+
+- `!["check_sub_gap", "checksubgap", "subgap", "gap"]` -> Shows you subgap
+- `!["pewdiepie_subs", "pewds_subs", "pewdssubs", "pewdsubs", "pewdiepie", "pewds", "pewd"]` -> Shows you PewDiePie's subscriber count
+- `!["series_subs", "tseriessubs", "tseries_subs", "t-series", "tseries"]` -> Shows you TSeries' subscriber count
+
+## Credits
+- Thanks to @FNCxPro and @papiersnipper for adding Discord functionality!
