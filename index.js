@@ -47,23 +47,23 @@ function getStats() {
 	})
   }
 
-//Listen for tweets from TSeries and PewDiePie
+//Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast
 const stream = T.stream('statuses/filter', {
-	follow: ['286036879', '39538010', '1068166867238494208']
+	follow: ['286036879', '39538010', '365956744', '427930773', '2455740283']
 });
 stream.on('tweet', (tweet) => {
-	//Check if it's not a RT by checking the twitter ID
-	if (tweet.user.id_str === '39538010' || tweet.user.id_str === '286036879' || tweet.user.id_str == '1068166867238494208') {
+	//No replies, only RTs and base tweets. Should reduce amount of tweets.
+	if (tweet.user && !tweet.in_reply_to_status_id) {
 		//Get the statistics
 		getStats().then(res => {
 			let msg;
 			if (res.difference <= 25000) {
 				//SOUND THE ALARM!
-				msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ONLY ${humanize(res.difference)} subs away from TSeries [${humanize(res.tseries)} subs]!
+				msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ONLY ${humanize(res.difference)} subs ahead of TSeries [${humanize(res.tseries)} subs]!
 				#SavePewDiePie #SubscribeToPewDiePie`;
 			} else {
 				//Okay we're a good number away
-				msg = `Subscribe to PewDiePie! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ${humanize(res.difference)} subs away from TSeries [${humanize(res.tseries)} subs]!
+				msg = `Subscribe to PewDiePie! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ${humanize(res.difference)} subs ahead of TSeries [${humanize(res.tseries)} subs]!
 				#SavePewDiePie #SubscribeToPewDiePie`;
 			}
 
@@ -91,8 +91,9 @@ prefix = '!';
 
 discord_client.on('message', message => {
     mc = message.content.toLowerCase();
-    if (!mc.startsWith(prefix) || message.author.bot) return;
-
+	if (!mc.startsWith(prefix) || message.author.bot) return;
+	
+	//Huge thanks to papiersnipper for this!
 	if (mc === `${prefix}check_sub_gap` || mc === `${prefix}sub_gap` || mc === `${prefix}gap`) {
 		getStats().then(res => {
 			msg = `PewDiePie \`(${humanize(res.pewdiepie)} subs)\` is currently **${humanize(res.difference)}** subs away from T-Series \`(${humanize(res.tseries)} subs)\``;
