@@ -10,6 +10,7 @@ const createEmbed = () => {
   embed.setFooter("PewdsBot");
   embed.setTimestamp();
   embed.setURL("https://github.com/hackergiraffe/pewds_bot");
+  embed.setThumbnail(CONFIG.discord.thumbnail);
   embed.setTitle("PewdsBot");
   return embed;
 };
@@ -21,10 +22,10 @@ const commands = [
     executor: async msg => {
       const { pewdiepie, tseries, difference } = await getStats();
       const embed = createEmbed();
+      embed.addField("PewDiePie", humanize(pewdiepie), true);
+      embed.addField("T-Series", humanize(tseries), true);
       embed.setDescription(
-        `PewDiePie [${humanize(pewdiepie)}] is ${humanize(
-          difference
-        )} subscribers away from T-Series [${humanize(tseries)}]`
+        `PewDiePie is currently ${humanize(difference)} subscribers away from T-Series`
       );
       await msg.channel.send(embed);
     }

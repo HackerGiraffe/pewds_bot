@@ -1,7 +1,6 @@
 /********************************** 
 TODO:
 - Add Discord Bot functionality
-	- Commands like check_sub_gap, pewds_subs, tseries_subs, etc...
 	- Automatically pinging @everyone when the sub gap is low :D
 - Improve Twitter functionality (tweet every x hours, maybe?)
 - Add check for rate limiting (twitter only for now, I dont think we'd hit the google quota)
