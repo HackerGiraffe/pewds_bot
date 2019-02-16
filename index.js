@@ -16,13 +16,13 @@ const humanize = require('humanize-number');
 
 //Sources
 const Twit = require('twit');
-const {
-	YouTube
-} = require('better-youtube-api');
+const { YouTube } = require('better-youtube-api');
+const Discord = require('discord.js');
 
 //Config and init
 const CONFIG = require('./config.json');
 const youtube = new YouTube(CONFIG.youtube.api_key);
+const discord_token = CONFIG.discord.token;
 
 //Init twitter
 const T = new Twit({
@@ -84,3 +84,33 @@ stream.on('tweet', (tweet) => {
 		});
 	}
 });
+
+// Discord
+const discord_client = new Discord.Client();
+prefix = '!';
+
+discord_client.on('message', message => {
+    mc = message.content.toLowerCase();
+    if (!mc.startsWith(prefix) || message.author.bot) return;
+
+	if (mc === `${prefix}check_sub_gap` || mc === `${prefix}sub_gap` || mc === `${prefix}gap`) {
+		getStats().then(res => {
+			msg = `PewDiePie \`(${humanize(res.pewdiepie)} subs)\` is currently **${humanize(res.difference)}** subs away from T-Series \`(${humanize(res.tseries)} subs)\``;
+		return message.channel.send(msg)
+	});
+
+	} else if (mc === `${prefix}pewds_subs` || mc === `${prefix}pewds` || mc === `${prefix}pewdiepie`) {
+		getStats().then(res => {
+			msg = `PewDiePie currently has **${humanize(res.pewdiepie)}** subs`;
+		return message.channel.send(msg)
+    });
+
+	} else if (mc === `${prefix}tseries_subs` || mc === `${prefix}tseries` || mc === `${prefix}t-series`) {
+		getStats().then(res => {
+			msg = `T-Series currently has **${humanize(res.tseries)}** subs`;
+		return message.channel.send(msg)
+		});
+	} else return;
+});
+
+discord_client.login(discord_token);
