@@ -48,39 +48,48 @@ function getStats() {
   }
 
 //Listen for tweets from TSeries and PewDiePie
-const stream = T.stream('statuses/filter', {
+const userStream = T.stream('statuses/filter', {
 	follow: ['286036879', '39538010', '1068166867238494208']
 });
-stream.on('tweet', (tweet) => {
+userStream.on('tweet', tweet => {
 	//Check if it's not a RT by checking the twitter ID
-	if (tweet.user.id_str === '39538010' || tweet.user.id_str === '286036879' || tweet.user.id_str == '1068166867238494208') {
-		//Get the statistics
-		getStats().then(res => {
-			let msg;
-			if (res.difference <= 25000) {
-				//SOUND THE ALARM!
-				msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ONLY ${humanize(res.difference)} subs away from TSeries [${humanize(res.tseries)} subs]!
-				#SavePewDiePie #SubscribeToPewDiePie`;
-			} else {
-				//Okay we're a good number away
-				msg = `Subscribe to PewDiePie! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ${humanize(res.difference)} subs away from TSeries [${humanize(res.tseries)} subs]!
-				#SavePewDiePie #SubscribeToPewDiePie`;
-			}
-
-			//Actually reply to the said tweet
-			T.post('statuses/update', {
-				status: msg,
-				in_reply_to_status_id: tweet.id_str,
-				auto_populate_reply_metadata: true
-			}, (err, data, response) => {
-				if (err) {
-					//If someone can improve this please do I hate error handling thanks
-					console.log(chalk.red('Error tweeting!', err));
-				} else {
-					//Too lazy to check the data for an actual OK response, I'm sleepy and tired
-					console.log(chalk.green(`Tweeted successfully at @${tweet.user.screen_name}!`));
-				}
-			});
-		});
-	}
+	if (tweet.user.id_str === '39538010' || tweet.user.id_str === '286036879' || tweet.user.id_str == '1068166867238494208') reply(tweet);
 });
+
+//Listen to tweets with the tag #PewdiepieSubGap
+const tagStream = T.stream('statuses/filter', {
+	track: '#PewdiepieSubGap'
+});
+tagStream.on('tweet', reply);
+
+//Reply to a Tweet with the current status
+function reply(tweet) {
+	//Get the statistics
+	getStats().then(res => {
+		let msg;
+		if (res.difference <= 25000) {
+			//SOUND THE ALARM!
+			msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ONLY ${humanize(res.difference)} subs away from TSeries [${humanize(res.tseries)} subs]!
+			#SavePewDiePie #SubscribeToPewDiePie`;
+		} else {
+			//Okay we're a good number away
+			msg = `Subscribe to PewDiePie! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ${humanize(res.difference)} subs away from TSeries [${humanize(res.tseries)} subs]!
+			#SavePewDiePie #SubscribeToPewDiePie`;
+		}
+
+		//Actually reply to the said tweet
+		T.post('statuses/update', {
+			status: msg,
+			in_reply_to_status_id: tweet.id_str,
+			auto_populate_reply_metadata: true
+		}, (err, data, response) => {
+			if (err) {
+				//If someone can improve this please do I hate error handling thanks
+				console.log(chalk.red('Error tweeting!', err));
+			} else {
+				//Too lazy to check the data for an actual OK response, I'm sleepy and tired
+				console.log(chalk.green(`Tweeted successfully at @${tweet.user.screen_name}!`));
+			}
+		});
+	});
+}
