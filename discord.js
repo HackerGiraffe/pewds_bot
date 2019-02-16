@@ -25,8 +25,15 @@ const commands = [
       embed.addField("PewDiePie", humanize(pewdiepie), true);
       embed.addField("T-Series", humanize(tseries), true);
       embed.setDescription(
-        `PewDiePie is currently ${humanize(difference)} subscribers away from T-Series`
+        `PewDiePie is currently **${humanize(difference)}** subscribers away from T-Series`
       );
+      if (difference < 25000) {
+        embed.setColor('RED')
+      } else if (difference < 0) { // When T-Series has more subs than Pewds
+        embed.setColor('DARK_RED')
+      } else { // Everything's fine
+        embed.setColor('GREEN')
+      };
       await msg.channel.send(embed);
     }
   },
@@ -44,7 +51,7 @@ const commands = [
       const { pewdiepie } = await getStats();
       const embed = createEmbed();
       embed.setDescription(
-        `PewDiePie currently has ${humanize(pewdiepie)} subscribers.`
+        `PewDiePie currently has **${humanize(pewdiepie)}** subscribers.`
       );
       await msg.channel.send(embed);
     }
@@ -56,7 +63,7 @@ const commands = [
       const { tseries } = await getStats();
       const embed = createEmbed();
       embed.setDescription(
-        `T-Series currently has ${humanize(tseries)} subscribers.`
+        `T-Series currently has **${humanize(tseries)}** subscribers.`
       );
       await msg.channel.send(embed);
     }
