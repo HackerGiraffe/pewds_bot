@@ -64,7 +64,7 @@ const commands = [
 
 client.on("ready", () => {
   // discord.js ready event
-  console.log("pewdsbot ready");
+  console.log(chalk.green('[Discord] PewdsBot ready!'));
 });
 
 client.on("message", async msg => {
@@ -81,7 +81,7 @@ client.on("message", async msg => {
     if (!cmd) return; // command not found
     await cmd.executor(msg);
   } catch (err) {
-    console.error(chalk.red("error in message handler"), err);
+    console.error(chalk.red("[Discord] Error in message handler!"), err);
   }
 });
 

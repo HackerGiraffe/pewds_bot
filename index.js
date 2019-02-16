@@ -39,7 +39,17 @@ const T = new Twit({
 	access_token_secret: CONFIG.twitter.access_token_secret
 });
 
+//Modules
 require("./discord");
+
+//Check twitter
+T.get('account/verify_credentials', { skip_status: true })
+  .catch(function (err) {
+    console.log(chalk.red(`[Twitter] Error logging in!`), err);
+  })
+  .then(function (result) {
+	  console.log(chalk.green(`[Twitter] Logged in successfully!`));
+});
 
 //Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast
 let users_arr = ["286036879", "39538010", '365956744', '427930773', '2455740283'];
@@ -72,11 +82,11 @@ stream.on("tweet", async tweet => {
 				(err, data, response) => {
 					if (err) {
 						//If someone can improve this please do I hate error handling thanks
-						console.log(chalk.red("Error tweeting!", err));
+						console.log(chalk.red("[Twitter] Error tweeting!", err));
 					} else {
 						//Too lazy to check the data for an actual OK response, I'm sleepy and tired
 						console.log(
-							chalk.green(`Tweeted successfully at @${tweet.user.screen_name}!`)
+							chalk.green(`[Twitter] Tweeted successfully at @${tweet.user.screen_name}!`)
 						);
 					}
 				}
