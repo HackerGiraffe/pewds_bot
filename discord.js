@@ -65,6 +65,8 @@ const commands = [
 client.on("ready", () => {
   // discord.js ready event
   console.log(chalk.green('[Discord] PewdsBot ready!'));
+  // add playing status
+  client.user.setGame('Subscribe to PewDiePie')
 });
 
 client.on("message", async msg => {
