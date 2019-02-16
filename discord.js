@@ -7,10 +7,10 @@ const client = new Discord.Client(); // instantiate a new Discord.Client
 const { getStats } = require("./util");
 const createEmbed = () => {
   let embed = new Discord.RichEmbed();
-  embed.setFooter("PewdsBot");
+  embed.setFooter(`PewdsBot - Serving ${client.guilds.size} servers [Created by HackerGiraffe]`);
   embed.setTimestamp();
   embed.setURL("https://github.com/hackergiraffe/pewds_bot");
-  embed.setThumbnail(CONFIG.discord.thumbnail);
+//   embed.setThumbnail(CONFIG.discord.thumbnail); //No thumbnail for now
   embed.setTitle("PewdsBot");
   return embed;
 };
@@ -18,7 +18,8 @@ const createEmbed = () => {
 const commands = [
   {
     command: "check_sub_gap",
-    aliases: ["checksubgap", "subgap", "gap"],
+	aliases: ["checksubgap", "subgap", "gap"],
+	description: 'Shows the subscriber gap between PewDiePie and TSeries.',
     executor: async msg => {
       const { pewdiepie, tseries, difference } = await getStats();
       const embed = createEmbed();
@@ -39,7 +40,8 @@ const commands = [
       "pewdiepie",
       "pewds",
       "pewd"
-    ],
+	],
+	description: 'Shows how many subs PewDiePie has.',
     executor: async msg => {
       const { pewdiepie } = await getStats();
       const embed = createEmbed();
@@ -51,7 +53,8 @@ const commands = [
   },
   {
     command: "t-series_subs",
-    aliases: ["tseriessubs", "tseries_subs", "t-series", "tseries"],
+	aliases: ["tseriessubs", "tseries_subs", "t-series", "tseries"],
+	description: 'Shows how many subs TSeries has.',
     executor: async msg => {
       const { tseries } = await getStats();
       const embed = createEmbed();
@@ -59,9 +62,48 @@ const commands = [
         `T-Series currently has ${humanize(tseries)} subscribers.`
       );
       await msg.channel.send(embed);
-    }
+    },
+  },
+  {
+	  command: 'help',
+	  aliases: ['h'],
+	  description: 'Displays help...duh?',
+	  executor: async msg => {
+		  let embed = createEmbed();
+		  embed.setDescription(`A list of all commands you can use! The current prefix for PewdsBot is "${CONFIG.discord.prefix}"`);
+		  //Ugly for loop but I need it to be sync
+		  for (let i = 0; i < commands.length; i++) {
+			embed.addField(commands[i].command, `${commands[i].description}\n*Alternate forms: ${commands[i].aliases.join(', ')}*`);
+		  }
+		  await msg.channel.send(embed);
+	  }
   }
 ];
+
+//When joining a server, say hi!
+client.on('guildCreate', guild => {
+	console.log(chalk.blue(`[Discord] New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`));
+	
+	//Ripped from stackoverflow
+	let channelID;
+    let channels = guild.channels;
+    channelLoop:
+    for (let c of channels) {
+        let channelType = c[1].type;
+        if (channelType === "text") {
+            channelID = c[0];
+            break channelLoop;
+        }
+    }
+    let channel = client.channels.get(guild.systemChannelID || channelID);
+	channel.send(`Thanks for inviting me to the server! Type \`${CONFIG.discord.prefix}help\` for information on commands!`);
+})
+
+//When leaving a server, just tell us
+client.on("guildDelete", guild => {
+	// this event triggers when the bot is removed from a guild.
+	console.log(chalk.blue(`[Discord] I have been removed from: ${guild.name} (id: ${guild.id})`));
+});
 
 client.on("ready", () => {
   // discord.js ready event
@@ -83,7 +125,8 @@ client.on("message", async msg => {
 		msg.channel.send('Invalid command.');
 		return;
 	} // command not found
-    await cmd.executor(msg);
+	await cmd.executor(msg);
+	console.log(chalk.blue(`[Discord] Executing ${cmdTxt} by ${msg.author.username} ${msg.author} in ${msg.guild || "PM"} [${msg.guild.id}]`));
   } catch (err) {
     console.error(chalk.red("[Discord] Error in message handler!"), err);
   }

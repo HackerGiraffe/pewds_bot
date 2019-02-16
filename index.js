@@ -2,6 +2,7 @@
 TODO:
 - Add Discord Bot functionality
 	- Automatically pinging @everyone when the sub gap is low :D
+	- Adding a dymanic help menu (URGENT)
 - Improve Twitter functionality (tweet every x hours, maybe?)
 - Add check for rate limiting (twitter only for now, I dont think we'd hit the google quota)
 - Reddit functionality too?
@@ -20,15 +21,9 @@ const {
 
 //Sources
 const Twit = require('twit');
-const {
-	YouTube
-} = require('better-youtube-api');
-const Discord = require('discord.js');
 
 //Config and init
 const CONFIG = require("./config.json");
-const youtube = new YouTube(CONFIG.youtube.api_key);
-const discord_token = CONFIG.discord.token;
 
 //Init twitter
 const T = new Twit({
