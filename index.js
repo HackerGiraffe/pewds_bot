@@ -2,7 +2,6 @@
 TODO:
 - Add Discord Bot functionality
 	- Automatically pinging @everyone when the sub gap is low :D
-	- Adding a dymanic help menu (URGENT)
 - Improve Twitter functionality (tweet every x hours, maybe?)
 - Add check for rate limiting (twitter only for now, I dont think we'd hit the google quota)
 - Reddit functionality too?

@@ -15,3 +15,4 @@ You can invite it [here](https://discordapp.com/oauth2/authorize?client_id=54636
 - Thanks to @FNCxPro and @papiersnipper for adding Discord functionality!
 - Thanks to @Tibo442 for making the Discord embeds prettier!
 - Thanks to @ACA30 for updating the TODO for me because I was too lazy!
+- Thanks to @papiersnipper for colored gap Discord embeds!
