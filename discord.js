@@ -4,7 +4,7 @@ const humanize = require("humanize-number");
 const chalk = require("chalk");
 
 const client = new Discord.Client(); // instantiate a new Discord.Client
-const { getStats } = require("./util");
+const { getStats, addListener } = require("./util");
 const createEmbed = () => {
   let embed = new Discord.RichEmbed();
   embed.setFooter(`PewdsBot - Serving ${client.guilds.size} servers [Created by HackerGiraffe]`);
@@ -15,13 +15,25 @@ const createEmbed = () => {
   return embed;
 };
 
+const updatePresence = (stats, oldStats) => {
+    let direction = "";
+    if (oldStats)
+        direction = stats.difference > oldStats.difference ? "📈" : "📉"
+    client.user.setPresence({
+        game: {
+            name: `sub gap: ${humanize(stats.difference)}${direction}` ,
+            type: 'WATCHING'
+        }
+    })
+}
+
 const commands = [
   {
     command: "check_sub_gap",
 	aliases: ["checksubgap", "subgap", "gap"],
 	description: 'Shows the subscriber gap between PewDiePie and TSeries.',
     executor: async msg => {
-      const { pewdiepie, tseries, difference } = await getStats();
+      const { pewdiepie, tseries, difference } = getStats();
       const embed = createEmbed();
       embed.addField("PewDiePie", humanize(pewdiepie), true);
       embed.addField("T-Series", humanize(tseries), true);
@@ -50,7 +62,7 @@ const commands = [
 	],
 	description: 'Shows how many subs PewDiePie has.',
     executor: async msg => {
-      const { pewdiepie } = await getStats();
+      const { pewdiepie } = getStats();
       const embed = createEmbed();
       embed.setDescription(
         `PewDiePie currently has **${humanize(pewdiepie)}** subscribers.`
@@ -63,7 +75,7 @@ const commands = [
 	aliases: ["tseriessubs", "tseries_subs", "t-series", "tseries"],
 	description: 'Shows how many subs TSeries has.',
     executor: async msg => {
-      const { tseries } = await getStats();
+      const { tseries } = getStats();
       const embed = createEmbed();
       embed.setDescription(
         `T-Series currently has **${humanize(tseries)}** subscribers.`
@@ -113,9 +125,18 @@ client.on("guildDelete", guild => {
 });
 
 client.on("ready", () => {
-  // discord.js ready event
-  console.log(chalk.green('[Discord] PewdsBot ready!'));
-  client.user.setActivity('Supporting PewDiePie!');
+    // discord.js ready event
+    console.log(chalk.green('[Discord] PewdsBot ready!'));
+    updatePresence(getStats())
+    
+    addListener((newStats, oldStats) => {
+        updatePresence(newStats, oldStats);
+
+        // Only send message when going from 25k+ -> <25
+        if ((oldStats ? oldStats.difference > 25000 : true) && newStats.difference < 25000) {
+            // TODO: low sub gap warning
+        }
+    });
 });
 
 client.on("message", async msg => {

@@ -15,7 +15,8 @@ const humanize = require("humanize-number");
 
 // Utils
 const {
-	getStats
+	getStats,
+	updateStats
 } = require("./util");
 
 //Sources
@@ -24,16 +25,27 @@ const Twit = require('twit');
 //Config and init
 const CONFIG = require("./config.json");
 
+//Stat updater
+updateStats();
+setInterval(() => {
+	updateStats();
+}, CONFIG.youtube.refreshdelay);
+
+//Modules
+require("./discord");
+
 //Init twitter
+if(!CONFIG.twitter) {
+	console.log(chalk.red(`[Twitter] Missing credentials!`));
+	return;
+}
+
 const T = new Twit({
 	consumer_key: CONFIG.twitter.consumer_key,
 	consumer_secret: CONFIG.twitter.consumer_secret,
 	access_token: CONFIG.twitter.access_token,
 	access_token_secret: CONFIG.twitter.access_token_secret
 });
-
-//Modules
-require("./discord");
 
 //Check twitter
 T.get('account/verify_credentials', { skip_status: true })
@@ -53,37 +65,36 @@ stream.on("tweet", async tweet => {
 	//Check if it's not a RT by checking the twitter ID
 	if (tweet.user && !tweet.in_reply_to_status_id && (users_arr.indexOf(tweet.user.id_str) >= 0)) {
 		//Get the statistics
-		getStats().then(res => {
-			let msg;
-			if (res.difference <= 25000) {
-				//SOUND THE ALARM!
-				msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ONLY ${humanize(res.difference)} subs away from TSeries [${humanize(res.tseries)} subs]!
-				#SavePewDiePie #SubscribeToPewDiePie`;
-			} else {
-				//Okay we're a good number away
-				msg = `Subscribe to PewDiePie! PewDiePie [${humanize(res.pewdiepie)} subs] is currently ${humanize(res.difference)} subs away from TSeries [${humanize(res.tseries)} subs]!
-				#SavePewDiePie #SubscribeToPewDiePie`;
-			}
+		const stats = getStats();
+		let msg;
+		if (stats.difference <= 25000) {
+			//SOUND THE ALARM!
+			msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(stats.pewdiepie)} subs] is currently ONLY ${humanize(stats.difference)} subs away from TSeries [${humanize(stats.tseries)} subs]!
+			#SavePewDiePie #SubscribeToPewDiePie`;
+		} else {
+			//Okay we're a good number away
+			msg = `Subscribe to PewDiePie! PewDiePie [${humanize(stats.pewdiepie)} subs] is currently ${humanize(stats.difference)} subs away from TSeries [${humanize(stats.tseries)} subs]!
+			#SavePewDiePie #SubscribeToPewDiePie`;
+		}
 
-			//Actually reply to the said tweet
-			T.post(
-				"statuses/update", {
-					status: msg,
-					in_reply_to_status_id: tweet.id_str,
-					auto_populate_reply_metadata: true
-				},
-				(err, data, response) => {
-					if (err) {
-						//If someone can improve this please do I hate error handling thanks
-						console.log(chalk.red("[Twitter] Error tweeting!", err));
-					} else {
-						//Too lazy to check the data for an actual OK response, I'm sleepy and tired
-						console.log(
-							chalk.green(`[Twitter] Tweeted successfully at @${tweet.user.screen_name}!`)
-						);
-					}
+		//Actually reply to the said tweet
+		T.post(
+			"statuses/update", {
+				status: msg,
+				in_reply_to_status_id: tweet.id_str,
+				auto_populate_reply_metadata: true
+			},
+			(err, data, response) => {
+				if (err) {
+					//If someone can improve this please do I hate error handling thanks
+					console.log(chalk.red("[Twitter] Error tweeting!", err));
+				} else {
+					//Too lazy to check the data for an actual OK response, I'm sleepy and tired
+					console.log(
+						chalk.green(`[Twitter] Tweeted successfully at @${tweet.user.screen_name}!`)
+					);
 				}
-			);
-		});
+			}
+		);
 	}
 });
