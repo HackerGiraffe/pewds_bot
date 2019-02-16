@@ -10,6 +10,7 @@ const createEmbed = () => {
   embed.setFooter("PewdsBot");
   embed.setTimestamp();
   embed.setURL("https://github.com/hackergiraffe/pewds_bot");
+  embed.setThumbnail(CONFIG.discord.thumbnail);
   embed.setTitle("PewdsBot");
   return embed;
 };
@@ -21,10 +22,10 @@ const commands = [
     executor: async msg => {
       const { pewdiepie, tseries, difference } = await getStats();
       const embed = createEmbed();
+      embed.addField("PewDiePie", humanize(pewdiepie), true);
+      embed.addField("T-Series", humanize(tseries), true);
       embed.setDescription(
-        `PewDiePie [${humanize(pewdiepie)}] is ${humanize(
-          difference
-        )} subscribers away from T-Series [${humanize(tseries)}]`
+        `PewDiePie is currently ${humanize(difference)} subscribers away from T-Series`
       );
       await msg.channel.send(embed);
     }
@@ -43,7 +44,7 @@ const commands = [
       const { pewdiepie } = await getStats();
       const embed = createEmbed();
       embed.setDescription(
-        `PewDiePie currently has ${humanize(pewdiepie)}] subscribers.`
+        `PewDiePie currently has ${humanize(pewdiepie)} subscribers.`
       );
       await msg.channel.send(embed);
     }
@@ -55,7 +56,7 @@ const commands = [
       const { tseries } = await getStats();
       const embed = createEmbed();
       embed.setDescription(
-        `T-Series currently has ${humanize(tseries)}] subscribers.`
+        `T-Series currently has ${humanize(tseries)} subscribers.`
       );
       await msg.channel.send(embed);
     }
@@ -76,7 +77,7 @@ client.on("message", async msg => {
     let cmdTxt = content.split(" ")[0];
     let cmd = commands.find(item => {
       // Find a command using predicate
-      return item.command === cmdTxt || item.aliases.includes(cmdText);
+      return item.command === cmdTxt || item.aliases.includes(cmdTxt);
     });
     if (!cmd) return; // command not found
     await cmd.executor(msg);
