@@ -43,7 +43,7 @@ const commands = [
       const { pewdiepie } = await getStats();
       const embed = createEmbed();
       embed.setDescription(
-        `PewDiePie currently has ${humanize(pewdiepie)}] subscribers.`
+        `PewDiePie currently has ${humanize(pewdiepie)} subscribers.`
       );
       await msg.channel.send(embed);
     }
@@ -55,7 +55,7 @@ const commands = [
       const { tseries } = await getStats();
       const embed = createEmbed();
       embed.setDescription(
-        `T-Series currently has ${humanize(tseries)}] subscribers.`
+        `T-Series currently has ${humanize(tseries)} subscribers.`
       );
       await msg.channel.send(embed);
     }
@@ -65,20 +65,23 @@ const commands = [
 client.on("ready", () => {
   // discord.js ready event
   console.log(chalk.green('[Discord] PewdsBot ready!'));
+  client.user.setActivity('Supporting PewDiePie!');
 });
 
 client.on("message", async msg => {
   // discord.js message event
   try {
     if (msg.author.bot || msg.author === client.user) return; // Checks if executor is bot/self
-    if (!msg.content.startsWith(CONFIG.discord.prefix)) return; // Checks for prefix
-    let content = msg.content.substr(CONFIG.discord.prefix.length); // Slices the prefix off of the message
-    let cmdTxt = content.split(" ")[0];
+	if (!msg.content.startsWith(CONFIG.discord.prefix)) return;
+	let cmdTxt = msg.content.substr(CONFIG.discord.prefix.length);
     let cmd = commands.find(item => {
       // Find a command using predicate
-      return item.command === cmdTxt || item.aliases.includes(cmdText);
+      return item.command === cmdTxt || item.aliases.includes(cmdTxt);
     });
-    if (!cmd) return; // command not found
+    if (!cmd) {
+		msg.channel.send('Invalid command.');
+		return;
+	} // command not found
     await cmd.executor(msg);
   } catch (err) {
     console.error(chalk.red("[Discord] Error in message handler!"), err);
