@@ -41,11 +41,12 @@ comments.on('comment', (comment) => {
 	if (comment.body.toLowerCase().indexOf('p!subgap') >= 0 || comment.body.toLowerCase().indexOf('p!gap') >= 0) {
 		const stats = getStats()
 		// Weird but yeah
-		comment.reply(`PewDiePie is ahead of TSeries by **${humanize(stats.difference)}** ${direction} subscribers.    
-		PewDiePie: **${humanize(stats.pewdiepie)}** subs  
-		TSeries: **${humanize(stats.tseries)}** subs  
+		comment.reply(`### PewDiePie is ahead of TSeries by **${humanize(stats.difference)}** ${direction} subscribers.    
+### PewDiePie: **${humanize(stats.pewdiepie)}** subs  
+### TSeries: **${humanize(stats.tseries)}** subs  
 ***
-^(I'm a bot created by u/HackerGiraffe (@0xGiraffe)! Find out more information [here](https://github.com/hackergiraffe/pewds_bot))
+I'm a bot created by u/HackerGiraffe [@0xGiraffe]!
+Find out more information [here](https://github.com/hackergiraffe/pewds_bot)
 `).then(() => {
 			console.log(chalk.green(`[Reddit] Replying to u/${comment.author.name} in ${comment.subreddit_name_prefixed} [${comment.permalink}]`));
 		}).catch((err) => {
