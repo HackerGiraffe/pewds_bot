@@ -121,7 +121,7 @@ client.on('guildCreate', guild => {
     let channelType = c[1].type
     if (channelType === 'text') {
       channelID = c[0]
-      break
+      break;
     }
   }
   let channel = client.channels.get(guild.systemChannelID || channelID)
@@ -161,6 +161,7 @@ client.on('ready', () => {
 					  if (c.type === 'text') {
 						if (c.permissionsFor(this.client.user).has('VIEW_CHANNEL') === true) {
 						  if (c.permissionsFor(this.client.user).has('SEND_MESSAGES') === true) {
+							console.log(chalk.green(`[Discord] Alert message sent to ${guild} [${guild.id}]!`));
 							c.send(toSay)
 							found = 1
 						  }
