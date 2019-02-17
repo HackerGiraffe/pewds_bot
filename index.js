@@ -3,7 +3,7 @@ TODO:
 - IMPORTANT: ADD A LOGGING SYSTEM
 - IMPORTANT: ADD PROPER ERROR HANDLING
 - Add Discord Bot functionality
-	- Automatically pinging @everyone when the sub gap is low :D
+	- Automatically pinging @everyone when the sub gap is low :D //Done, needs testing
 - Improve Twitter functionality (tweet every x hours, maybe?)
 - Add check for rate limiting (twitter only for now, I dont think we'd hit the google quota)
 - Reddit functionality too?
@@ -18,7 +18,8 @@ const humanize = require("humanize-number");
 // Utils
 const {
 	getStats,
-	updateStats
+	updateStats,
+	addListener
 } = require("./util");
 
 //Sources
@@ -54,9 +55,28 @@ T.get('account/verify_credentials', { skip_status: true })
   .catch(function (err) {
     console.log(chalk.red(`[Twitter] Error logging in!`), err);
   })
-  .then(function (result) {
+  .then(function () {
 	  console.log(chalk.green(`[Twitter] Logged in successfully!`));
 });
+
+//Listen for updates and maybe tweet about it
+let direction = ""; //Stealing emoji idea from discord code
+addListener((newStats, oldStats) => {
+	direction = stats.difference > oldStats.difference ? "📈" : "📉"; //Set emoji
+	if ((oldStats ? oldStats.difference > 25000 : true) && newStats.difference < 25000) {
+		//If the subgap is now low
+		T.post("statuses/update", {
+			status: `CALLING ALL BROS! THE SUBGAP IS NOW ${newStats.difference}! TAKE URGENT ACTION NOW!\n@pewdiepie @DolanDark @grandayy @MrBeastYT @0xGiraffe`,
+			auto_populate_reply_metadata: true
+		}, (err) => {
+			if (err) {
+				console.log(chalk.red(`[Twitter] Failed to tweet about the subgap! ${err}`));
+			} else {
+				console.log(chalk.green(`[Twitter] Tweeted about the subgap drop successfully!`));
+			}
+		})
+	}
+})
 
 //Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast, Brad 1, Brad 2, youtube, youtube creators
 let users_arr = ["286036879", "39538010", '365956744', '427930773', '2455740283', '353990109', '4844061977', '10228272', '239760107'];
@@ -71,11 +91,11 @@ stream.on("tweet", async tweet => {
 		let msg;
 		if (stats.difference <= 25000) {
 			//SOUND THE ALARM!
-			msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(stats.pewdiepie)} subs] is currently ONLY ${humanize(stats.difference)} subs away from TSeries [${humanize(stats.tseries)} subs]!
+			msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(stats.pewdiepie)} subs] is currently ONLY ${humanize(stats.difference)} ${direction} subs ahead of TSeries [${humanize(stats.tseries)} subs]!
 			#SavePewDiePie #SubscribeToPewDiePie`;
 		} else {
 			//Okay we're a good number away
-			msg = `Subscribe to PewDiePie! PewDiePie [${humanize(stats.pewdiepie)} subs] is currently ${humanize(stats.difference)} subs away from TSeries [${humanize(stats.tseries)} subs]!
+			msg = `Subscribe to PewDiePie! PewDiePie [${humanize(stats.pewdiepie)} subs] is currently ${humanize(stats.difference)} ${direction} subs ahead of TSeries [${humanize(stats.tseries)} subs]!
 			#SavePewDiePie #SubscribeToPewDiePie`;
 		}
 
@@ -86,7 +106,7 @@ stream.on("tweet", async tweet => {
 				in_reply_to_status_id: tweet.id_str,
 				auto_populate_reply_metadata: true
 			},
-			(err, data, response) => {
+			(err) => {
 				if (err) {
 					//If someone can improve this please do I hate error handling thanks
 					console.log(chalk.red("[Twitter] Error tweeting!", err));
