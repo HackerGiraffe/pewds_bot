@@ -9,10 +9,14 @@
   "author": "HackerGiraffe",
   "license": "MIT",
   "dependencies": {
+    "@discordjs/uws": "^11.149.1",
     "better-youtube-api": "^0.3.7",
+    "bufferutil": "^4.0.1",
     "chalk": "^2.4.2",
     "discord.js": "^11.4.2",
+    "erlpack": "github:discordapp/erlpack",
     "humanize-number": "0.0.2",
-    "twit": "^2.2.11"
+    "twit": "^2.2.11",
+    "zlib-sync": "^0.1.4"
   }
 }
