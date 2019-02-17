@@ -58,8 +58,8 @@ T.get('account/verify_credentials', { skip_status: true })
 	  console.log(chalk.green(`[Twitter] Logged in successfully!`));
 });
 
-//Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast
-let users_arr = ["286036879", "39538010", '365956744', '427930773', '2455740283'];
+//Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast, Brad 1, Brad 2, youtube, youtube creators
+let users_arr = ["286036879", "39538010", '365956744', '427930773', '2455740283', '353990109', '4844061977', '10228272', '239760107'];
 const stream = T.stream("statuses/filter", {
 	follow: users_arr
 });
