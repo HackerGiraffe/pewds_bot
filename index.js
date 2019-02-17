@@ -34,6 +34,12 @@ setInterval(() => {
 	updateStats();
 }, CONFIG.youtube.refreshdelay);
 
+//Alarm
+let alarm = true;
+setInterval(() => {
+	alarm = true;
+}, CONFIG.alarm_interval)
+
 //Modules
 require("./discord");
 require("./reddit");
@@ -63,8 +69,9 @@ T.get('account/verify_credentials', { skip_status: true })
 let direction = ""; //Stealing emoji idea from discord code
 addListener((newStats, oldStats) => {
 	if (oldStats) {
+		console.log(newStats, oldStats);
 		direction = newStats.difference > oldStats.difference ? "📈" : "📉"; //Set emoji
-		if (oldStats.difference >= 20000 && newStats.difference < 20000) {
+		if ((oldStats.difference >= CONFIG.subgap_limit) && (newStats.difference < CONFIG.subgap_limit) || ((newStats.difference < CONFIG.subgap_limit) && alarm)) {
 			//If the subgap is now low
 			console.log(chalk.yellow('[Twitter] PANIC MODE!'));
 			T.post("statuses/update", {
@@ -76,6 +83,7 @@ addListener((newStats, oldStats) => {
 				} else {
 					console.log(chalk.green(`[Twitter] Tweeted about the subgap drop successfully!`));
 				}
+				alarm = false;
 			})
 		}
 	}
@@ -92,7 +100,7 @@ stream.on("tweet", async tweet => {
 		//Get the statistics
 		const stats = getStats();
 		let msg;
-		if (stats.difference <= 25000) {
+		if (stats.difference <= CONFIG.subgap_limit) {
 			//SOUND THE ALARM!
 			msg = `CALLING ALL 9 YEAR OLDS! SUBSCRIBE TO PEWDIEPIE NOW! PewDiePie [${humanize(stats.pewdiepie)} subs] is currently ONLY ${humanize(stats.difference)} ${direction} subs ahead of TSeries [${humanize(stats.tseries)} subs]!
 			#SavePewDiePie #SubscribeToPewDiePie`;
