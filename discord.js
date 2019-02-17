@@ -47,7 +47,7 @@ const commands = [{
     embed.setDescription(
       `PewDiePie is currently **${humanize(difference)}** ${direction} subscribers ahead of T-Series`
     )
-    if (difference < 25000) {
+    if (difference < 20000) {
       embed.setColor('RED')
     } else if (difference < 0) { // When T-Series has more subs than Pewds
       embed.setColor('DARK_RED')
@@ -146,28 +146,31 @@ client.on('ready', () => {
   updatePresence(getStats())
 
   addListener((newStats, oldStats) => {
-    updatePresence(newStats, oldStats)
-
-    // Only send message when going from 25k+ -> <25
-    if ((oldStats ? oldStats.difference > 25000 : true) && newStats.difference < 25000) {
-      // TODO: testing the low sub gap warning (might remove the @here for @everone hmm)
-      let toSay = `**@here WARNING! CALLING ALL 9 YEAR OLDS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! WE MUST NOT LOSE THIS FIGHT AGAINST TSERIES!**`
-      this.client.guilds.map((guild) => {
-        let found = 0
-        guild.channels.map((c) => {
-          if (found === 0) {
-            if (c.type === 'text') {
-              if (c.permissionsFor(this.client.user).has('VIEW_CHANNEL') === true) {
-                if (c.permissionsFor(this.client.user).has('SEND_MESSAGES') === true) {
-                  c.send(toSay)
-                  found = 1
-                }
-              }
-            }
-          }
-        })
-      })
-    }
+	updatePresence(newStats, oldStats)
+	
+	if (oldStats) {
+		    // Only send message when going from 25k+ -> <25
+			if (oldStats.difference > 20000 && newStats.difference < 20000) {
+				console.log(chalk.yellow('[Discord] PANIC MODE!'));
+				// TODO: testing the low sub gap warning (might remove the @here for @everone hmm)
+				let toSay = `**@here WARNING! CALLING ALL 9 YEAR OLDS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! WE MUST NOT LOSE THIS FIGHT AGAINST TSERIES!**`
+				this.client.guilds.map((guild) => {
+				  let found = 0
+				  guild.channels.map((c) => {
+					if (found === 0) {
+					  if (c.type === 'text') {
+						if (c.permissionsFor(this.client.user).has('VIEW_CHANNEL') === true) {
+						  if (c.permissionsFor(this.client.user).has('SEND_MESSAGES') === true) {
+							c.send(toSay)
+							found = 1
+						  }
+						}
+					  }
+					}
+				  })
+				})
+			  }
+	}
   })
 })
 

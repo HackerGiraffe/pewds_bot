@@ -62,21 +62,22 @@ T.get('account/verify_credentials', { skip_status: true })
 //Listen for updates and maybe tweet about it
 let direction = ""; //Stealing emoji idea from discord code
 addListener((newStats, oldStats) => {
-	if (oldStats)
+	if (oldStats) {
 		direction = newStats.difference > oldStats.difference ? "📈" : "📉"; //Set emoji
-
-	if ((oldStats ? oldStats.difference > 25000 : true) && newStats.difference < 25000) {
-		//If the subgap is now low
-		T.post("statuses/update", {
-			status: `CALLING ALL BROS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! TAKE URGENT ACTION NOW!\n@pewdiepie @DolanDark @grandayy @MrBeastYT @0xGiraffe`,
-			auto_populate_reply_metadata: true
-		}, (err) => {
-			if (err) {
-				console.log(chalk.red(`[Twitter] Failed to tweet about the subgap! ${err}`));
-			} else {
-				console.log(chalk.green(`[Twitter] Tweeted about the subgap drop successfully!`));
-			}
-		})
+		if (oldStats.difference >= 20000 && newStats.difference < 20000) {
+			//If the subgap is now low
+			console.log(chalk.yellow('[Twitter] PANIC MODE!'));
+			T.post("statuses/update", {
+				status: `CALLING ALL BROS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! TAKE URGENT ACTION NOW!\n@pewdiepie @DolanDark @grandayy @MrBeastYT @0xGiraffe`,
+				auto_populate_reply_metadata: true
+			}, (err) => {
+				if (err) {
+					console.log(chalk.red(`[Twitter] Failed to tweet about the subgap! ${err}`));
+				} else {
+					console.log(chalk.green(`[Twitter] Tweeted about the subgap drop successfully!`));
+				}
+			})
+		}
 	}
 })
 
