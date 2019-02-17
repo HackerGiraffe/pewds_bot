@@ -124,6 +124,12 @@ client.on("guildDelete", guild => {
 	console.log(chalk.blue(`[Discord] I have been removed from: ${guild.name} (id: ${guild.id})`));
 });
 
+//TODO: BETTER HANDLING
+//Error handling to prevent crashing
+client.on("error", err => {
+	console.log(chalk.red(`[Discord] Error! ${err}`));
+});
+
 client.on("ready", () => {
     // discord.js ready event
     console.log(chalk.green('[Discord] PewdsBot ready!'));

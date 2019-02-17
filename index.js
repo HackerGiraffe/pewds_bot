@@ -1,5 +1,7 @@
 /********************************** 
 TODO:
+- IMPORTANT: ADD A LOGGING SYSTEM
+- IMPORTANT: ADD PROPER ERROR HANDLING
 - Add Discord Bot functionality
 	- Automatically pinging @everyone when the sub gap is low :D
 - Improve Twitter functionality (tweet every x hours, maybe?)
