@@ -36,11 +36,11 @@ setInterval(() => {
 
 //Modules
 require("./discord");
+require("./reddit");
 
 //Init twitter
 if(!CONFIG.twitter) {
 	console.log(chalk.red(`[Twitter] Missing credentials!`));
-	return;
 }
 
 const T = new Twit({
@@ -62,11 +62,13 @@ T.get('account/verify_credentials', { skip_status: true })
 //Listen for updates and maybe tweet about it
 let direction = ""; //Stealing emoji idea from discord code
 addListener((newStats, oldStats) => {
-	direction = stats.difference > oldStats.difference ? "📈" : "📉"; //Set emoji
+	if (oldStats)
+		direction = newStats.difference > oldStats.difference ? "📈" : "📉"; //Set emoji
+
 	if ((oldStats ? oldStats.difference > 25000 : true) && newStats.difference < 25000) {
 		//If the subgap is now low
 		T.post("statuses/update", {
-			status: `CALLING ALL BROS! THE SUBGAP IS NOW ${newStats.difference}! TAKE URGENT ACTION NOW!\n@pewdiepie @DolanDark @grandayy @MrBeastYT @0xGiraffe`,
+			status: `CALLING ALL BROS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! TAKE URGENT ACTION NOW!\n@pewdiepie @DolanDark @grandayy @MrBeastYT @0xGiraffe`,
 			auto_populate_reply_metadata: true
 		}, (err) => {
 			if (err) {
