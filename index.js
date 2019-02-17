@@ -68,7 +68,7 @@ addListener((newStats, oldStats) => {
 			//If the subgap is now low
 			console.log(chalk.yellow('[Twitter] PANIC MODE!'));
 			T.post("statuses/update", {
-				status: `CALLING ALL BROS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! TAKE URGENT ACTION NOW!\n@pewdiepie @DolanDark @grandayy @MrBeastYT @0xGiraffe`,
+				status: `CALLING ALL BROS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! TAKE URGENT ACTION NOW!\n@pewdiepie @DolanDark @grandayy @MrBeastYT @Jack_Septic_Eye @markiplier @0xGiraffe`,
 				auto_populate_reply_metadata: true
 			}, (err) => {
 				if (err) {
@@ -81,8 +81,8 @@ addListener((newStats, oldStats) => {
 	}
 })
 
-//Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast, Brad 1, Brad 2, youtube, youtube creators
-let users_arr = ["286036879", "39538010", '365956744', '427930773', '2455740283', '353990109', '4844061977', '10228272', '239760107'];
+//Listen for tweets from TSeries, PewDiePie, grandayy, dolandark, mrbeast, Brad 1, Brad 2, youtube, youtube creators, jackseticeye, markiplier, donald trump (lol), lwiay bot
+let users_arr = ["286036879", "39538010", '365956744', '427930773', '2455740283', '353990109', '4844061977', '10228272', '239760107', '77596200', '517077573', '25073877', '970472726564671488'];
 const stream = T.stream("statuses/filter", {
 	follow: users_arr
 });
