@@ -8,7 +8,7 @@ Currently, the bot ([@pewds_bot](https://twitter.com/pewds_bot)) will automatica
 ## Discord
 
 This Discord bot can provide you real-time information regarding the sub gap.
-You can invite it [here](https://discordapp.com/oauth2/authorize?client_id=546361604107927562&scope=bot&permissions=70679617).
+You can invite it [here](https://discordapp.com/oauth2/authorize?client_id=546361604107927562&scope=bot&permissions=183296).
 
 For the latest list of commands, run `p!help`.
 
@@ -17,7 +17,6 @@ Currently, the bot can be found on reddit as u/pewds_bot and can be summoned by 
 
 ## Credits
 - Thanks to @FNCxPro and @papiersnipper for adding Discord functionality!
-- Thanks to @Tibo442 for making the Discord embeds prettier!
+- Thanks to @FlatIsNice for making the Discord embeds prettier, adding stats caching and update intervals!
 - Thanks to @ACA30 for updating the TODO for me because I was too lazy!
 - Thanks to @papiersnipper for colored gap Discord embeds!
-- Thanks to @FlatIsNice for adding stats caching and update intervals!
