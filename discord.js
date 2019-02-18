@@ -155,7 +155,7 @@ client.on('ready', () => {
 			if ((oldStats.difference > CONFIG.subgap_limit) && (newStats.difference < CONFIG.subgap_limit)) {
 				console.log(chalk.yellow('[Discord] PANIC MODE!'));
 				// TODO: testing the low sub gap warning (might remove the @here for @everone hmm)
-				let toSay = `**@here WARNING! CALLING ALL 9 YEAR OLDS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! WE MUST NOT LOSE THIS FIGHT AGAINST TSERIES!**`
+				let toSay = `**WARNING! CALLING ALL 9 YEAR OLDS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! WE MUST NOT LOSE THIS FIGHT AGAINST TSERIES!**`
 				client.guilds.map((guild) => {
 					let found = 0
 					guild.channels.map((c) => {
