@@ -151,7 +151,6 @@ client.on('ready', () => {
 		updatePresence(newStats, oldStats)
 
 		if (oldStats) {
-			console.log(newStats, oldStats);
 			// Only send message when going from 25k+ -> <25
 			if ((oldStats.difference > CONFIG.subgap_limit) && (newStats.difference < CONFIG.subgap_limit)) {
 				console.log(chalk.yellow('[Discord] PANIC MODE!'));

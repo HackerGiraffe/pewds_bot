@@ -69,7 +69,6 @@ T.get('account/verify_credentials', { skip_status: true })
 let direction = ""; //Stealing emoji idea from discord code
 addListener((newStats, oldStats) => {
 	if (oldStats) {
-		console.log(newStats, oldStats);
 		direction = newStats.difference > oldStats.difference ? "📈" : "📉"; //Set emoji
 		if ((oldStats.difference >= CONFIG.subgap_limit) && (newStats.difference < CONFIG.subgap_limit) || ((newStats.difference < CONFIG.subgap_limit) && alarm)) {
 			//If the subgap is now low
