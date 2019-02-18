@@ -150,30 +150,30 @@ client.on('ready', () => {
 	addListener((newStats, oldStats) => {
 		updatePresence(newStats, oldStats)
 
-		if (oldStats) {
-			// Only send message when going from 25k+ -> <25
-			if ((oldStats.difference > CONFIG.subgap_limit) && (newStats.difference < CONFIG.subgap_limit)) {
-				console.log(chalk.yellow('[Discord] PANIC MODE!'));
-				// TODO: testing the low sub gap warning (might remove the @here for @everone hmm)
-				let toSay = `**WARNING! CALLING ALL 9 YEAR OLDS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! WE MUST NOT LOSE THIS FIGHT AGAINST TSERIES!**`
-				client.guilds.map((guild) => {
-					let found = 0
-					guild.channels.map((c) => {
-						if (found === 0) {
-							if (c.type === 'text') {
-								if (c.permissionsFor(client.user).has('VIEW_CHANNEL') === true) {
-									if (c.permissionsFor(client.user).has('SEND_MESSAGES') === true) {
-										console.log(chalk.green(`[Discord] Alert message sent to ${guild}!`));
-										c.send(toSay)
-										found = 1
-									}
-								}
-							}
-						}
-					})
-				})
-			}
-		}
+		// if (oldStats) {
+		// 	// Only send message when going from 25k+ -> <25
+		// 	if ((oldStats.difference > CONFIG.subgap_limit) && (newStats.difference < CONFIG.subgap_limit)) {
+		// 		console.log(chalk.yellow('[Discord] PANIC MODE!'));
+		// 		// TODO: testing the low sub gap warning (might remove the @here for @everone hmm)
+		// 		let toSay = `**WARNING! CALLING ALL 9 YEAR OLDS! THE SUBGAP IS NOW ${humanize(newStats.difference)}! WE MUST NOT LOSE THIS FIGHT AGAINST TSERIES!**`
+		// 		client.guilds.map((guild) => {
+		// 			let found = 0
+		// 			guild.channels.map((c) => {
+		// 				if (found === 0) {
+		// 					if (c.type === 'text') {
+		// 						if (c.permissionsFor(client.user).has('VIEW_CHANNEL') === true) {
+		// 							if (c.permissionsFor(client.user).has('SEND_MESSAGES') === true) {
+		// 								c.send(toSay)
+		// 								found = 1
+		// 							}
+		// 						}
+		// 					}
+		// 				}
+		// 			})
+		// 		})
+		// 		console.log(chalk.green(`[Discord] Panic message sent successfully!`));
+		// 	}
+		// }
 	})
 })
 
