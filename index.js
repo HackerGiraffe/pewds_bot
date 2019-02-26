@@ -119,7 +119,7 @@ stream.on("tweet", async tweet => {
 			(err) => {
 				if (err) {
 					//If someone can improve this please do I hate error handling thanks
-					console.log(chalk.red("[Twitter] Error tweeting!", err));
+					console.log(chalk.red(`[Twitter] Error tweeting at @${tweet.user.screen_name}!`, err));
 				} else {
 					//Too lazy to check the data for an actual OK response, I'm sleepy and tired
 					console.log(
