@@ -180,9 +180,10 @@ client.on('ready', () => {
 client.on('message', async msg => {
 	// discord.js message event
 	try {
+		message.content = message.content.toLowerCase(); //added .toLowerCase() here 
 		if (msg.author.bot || msg.author === client.user) return // Checks if executor is bot/self
 		if (!msg.content.startsWith(CONFIG.discord.prefix)) return
-		let cmdTxt = msg.content.substr(CONFIG.discord.prefix.length)
+		let cmdTxt = msg.content.substr(CONFIG.discord.prefix.length).trim() //added .trim() here
 		let cmd = commands.find(item => {
 			// Find a command using predicate
 			return item.command === cmdTxt || item.aliases.includes(cmdTxt)
